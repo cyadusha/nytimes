@@ -1,0 +1,31 @@
+---
+title: "NY Times"
+author: "Yadu"
+date: "March 30, 2016"
+output: html_document
+---
+
+```{r}
+library(httr)
+library(jsonlite)
+library(stringr)
+```
+
+```{r}
+j = fromJSON("http://api.nytimes.com/svc/semantic/v2/geocodes/query.json?feature_class=S&api-key=8362b50c62d211ae15667045551ac95d:5:74819770")
+n = nrow(j$results)
+c = colnames(j$results)
+c = str_replace_all(c, "_", " ")
+j
+```
+
+Now we try to make all the null readings consistent. 
+
+```{r}
+j = unlist(j$results, use.names = T)
+j = str_replace_all(j, "<NA>", "NA")
+j = matrix(j, nrow = n, byrow = F)
+j = data.frame(j)
+colnames(j) = c
+j
+```
